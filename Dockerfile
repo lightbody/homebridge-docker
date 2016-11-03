@@ -1,6 +1,6 @@
-FROM nodesource/jessie
-#FROM nodesource/jessie:5.8.0
-MAINTAINER Christian Brandlehner <christian@brandlehner.at>
+FROM nodesource/jessie:4.6.0
+# PL: Why 4.6.0 vs latest? Because the Wink module doesn't work on Node 6.x :(
+MAINTAINER Patrick Lightbody <patrick@lightbody.net>
 
 ##################################################
 # Set environment variables                      #
@@ -27,15 +27,10 @@ RUN alias ll='ls -alG'
 RUN npm install -g homebridge --unsafe-perm
 
 # depending on your config.json you have to add your modules here!
+# PL Change: just picking the modules I need -- faster that putting in package.json
 RUN npm install -g homebridge-philipshue --unsafe-perm
-RUN npm install -g homebridge-ninjablock-temperature --unsafe-perm
-RUN npm install -g homebridge-ninjablock-humidity --unsafe-perm
-RUN npm install -g homebridge-ninjablock-alarmstatedevice --unsafe-perm
-RUN npm install -g homebridge-luxtronik2 --unsafe-perm
-RUN npm install -g homebridge-people --unsafe-perm
-RUN npm install -g homebridge-tesla --unsafe-perm
-#RUN npm install -g homebridge-mqttswitch --unsafe-perm
-#RUN npm install -g homebridge-edomoticz --unsafe-perm
+RUN npm install -g homebridge-platform-wemo --unsafe-perm
+RUN npm install -g homebridge-wink --unsafe-perm
 
 ##################################################
 # Start                                          #
@@ -44,7 +39,9 @@ RUN npm install -g homebridge-tesla --unsafe-perm
 USER root
 RUN mkdir -p /var/run/dbus
 
+# ADD config-sample/package.json /root/.homebridge/package.json
 ADD image/run.sh /root/run.sh
 
 EXPOSE 5353 51826
 CMD ["/root/run.sh"]
+[~/homebridge-synology-docker]$ 
